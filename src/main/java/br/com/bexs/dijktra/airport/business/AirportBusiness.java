@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.bexs.dijktra.airport.model.AirportModel;
+import br.com.bexs.dijktra.airport.model.UserEntry;
 import br.com.bexs.dijktra.airport.model.UserResponse;
 import br.com.bexs.dijktra.airport.repository.AirportFileRepository;
 
@@ -29,23 +30,21 @@ public class AirportBusiness {
 		this.airportsVertex = this.buildVertexFromGraph();
 	}
 
-	public UserResponse findBestPath(String entryString) {
-		//Declaration
-		String[] entries = entryString.split("-");
-		UserResponse userResponse = new UserResponse(entries);
-		//Process
-		//INICIALIZA A BUSCA
+	public UserResponse findBestPath(UserEntry entry) {
+		
+		//DECLARATION
+		UserResponse userResponse = new UserResponse(entry.getBegin(),entry.getEnd());
+		//DECLARATION: INICIALIZA A BUSCA COM CUSTO ZERO NA ORIGEM
 		this.setupBeginAirport(userResponse.getBegin());
 		
-
-		//FOR aqui;
+		//PROCESS
 		while(!airportsVertex.isEmpty()) {
 			//BUSCA OS ITENS ABERTOS RESTANTES E RETORNA EM ORDEM DE CUSTO
 			airportsVertex = this.getOnlyOpenedVertex();
 			
 			//PEGA O MODELO MAIS PROXIMO E FECHA O VERTICE
 			AirportModel current = findNextValidVertex();
-						
+			
 			//RELAXA BUSCA PELO RELAXAMENTO DOS VERTICES
 			airportGraph.get(current.getName()).forEach(node ->{
 				//OBTEM O AEROPORTO DA LISTA VERTICES
@@ -65,25 +64,26 @@ public class AirportBusiness {
 				}
 			});
 			
-			
+			//SE CHEGOU ATE O FINAL PARA A BUSCA DOS VERTICES
 			if(userResponse.getEnd().equals(current.getName())) {
 				userResponse.setCost(current.getCost());
 				userResponse.setPath(current.getPath());
-				return userResponse;
+				break;
 			}
 		}
 		return userResponse;
 	}
 	
-	public String addConnection(String connection) throws Exception {
-		return airportFileRepository.addConnection(connection);
+	public String addConnection(UserEntry entry) throws Exception {
+		return airportFileRepository.addConnection(entry);
 	}
 
 	private AirportModel findNextValidVertex() {
-		 AirportModel current = airportsVertex.stream()
+		 AirportModel current = this.airportsVertex.stream()
 				 .filter(vertex -> !vertex.getCost().equals(Long.MAX_VALUE))
 				 .findFirst().orElse(null);		
-		if(current!=null)current.setOpened(false);
+		if(current==null) throw new RuntimeException("Não foi possível encontrar o caminho para sua solicitação:");
+		current.setOpened(false);
 		return current;
 	}
 

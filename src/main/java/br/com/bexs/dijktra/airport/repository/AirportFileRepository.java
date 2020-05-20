@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
 import br.com.bexs.dijktra.airport.model.AirportModel;
+import br.com.bexs.dijktra.airport.model.UserEntry;
 
 @Component
 public class AirportFileRepository {
@@ -36,13 +36,13 @@ public class AirportFileRepository {
 		return graphAirports;
 	}
 
-	public String addConnection(String connection) throws Exception{
+	public String addConnection(UserEntry entry) throws Exception{
 		try{
-			this.validateGraphStrutcture(connection);
+			this.validateGraphStrutcture(entry);
 			
 			BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
 			writer.newLine();
-			writer.append(connection);
+			writer.append(entry.getFormatedInsert());
 			writer.close();
 		}catch(Exception e){
 			 throw new RuntimeException("Erro criar o grafo",e);
@@ -50,12 +50,12 @@ public class AirportFileRepository {
 		return "Conexao Inserida com Sucesso";
 	}
 
-	private void validateGraphStrutcture(String connection) throws IOException {
+	private void validateGraphStrutcture(UserEntry entry) throws IOException {
 		Map<String, List<AirportModel>> graphAirports = new HashMap<String, List<AirportModel>>();
 		BufferedReader reader = Files.newBufferedReader(file.toPath());
 		List<String> lines = reader.lines().collect(Collectors.toList());
 		reader.close();
-		lines.add(connection);
+		lines.add(entry.getFormatedInsert());
 		this.buildGraph(graphAirports,lines);
 	}
 	

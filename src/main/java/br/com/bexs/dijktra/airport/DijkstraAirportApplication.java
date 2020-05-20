@@ -1,7 +1,6 @@
 package br.com.bexs.dijktra.airport;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -12,7 +11,7 @@ public class DijkstraAirportApplication {
 		ExecuterEnum executer = ExecuterEnum.getExecuter(args[0]);
 		
 		SpringApplication sp = new SpringApplication(DijkstraAirportApplication.class);
-		if(ExecuterEnum.console.equals(executer)) {
+		if(ExecuterEnum.CONSOLE.equals(executer)) {
 			sp.setWebApplicationType(WebApplicationType.NONE);
 		}
 		sp.run(args);

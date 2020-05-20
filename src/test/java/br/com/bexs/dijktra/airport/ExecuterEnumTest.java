@@ -1,14 +1,21 @@
 package br.com.bexs.dijktra.airport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Assert;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
+
 
 class ExecuterEnumTest {
 
 	@Test
-	void test() {
-		fail("Not yet implemented");
+	public void returnValidParameters() {
+		Assert.assertTrue(ExecuterEnum.CONSOLE.equals(ExecuterEnum.getExecuter("console")));
+		Assert.assertTrue(ExecuterEnum.REST.equals(ExecuterEnum.getExecuter("rest")));
+	}
+	
+	@Test(expected = RuntimeException.class )
+	public void returnException() {
+		ExecuterEnum.getExecuter("erro");
 	}
 
 }

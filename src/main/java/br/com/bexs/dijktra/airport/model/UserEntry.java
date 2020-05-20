@@ -1,15 +1,15 @@
 package br.com.bexs.dijktra.airport.model;
 
-public class UserResponse {
-	
+public class UserEntry {
+
 	private String begin;
 	private String end;
-	private String path;
 	private Long cost;
-	
-	public UserResponse(String begin,String end) {
+
+	public UserEntry(String begin, String end, Long cost) {
 		this.begin = begin;
 		this.end = end;
+		this.cost = cost;
 	}
 
 	public String getBegin() {
@@ -28,14 +28,6 @@ public class UserResponse {
 		this.end = end;
 	}
 
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	public Long getCost() {
 		return cost;
 	}
@@ -43,19 +35,12 @@ public class UserResponse {
 	public void setCost(Long cost) {
 		this.cost = cost;
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getPath().concat(" > $"))
-			.append(this.cost);
-		return sb.toString();
-	}
 
-	public String getFormattedQuery() {
+	public String getFormatedInsert() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(begin.concat("-"))
-			.append(end);
+		sb.append(begin.concat(","))
+			.append(end.concat(","))
+			.append(cost.toString());
 		return sb.toString();
 	}
 

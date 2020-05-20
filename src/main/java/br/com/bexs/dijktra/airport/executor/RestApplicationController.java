@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bexs.dijktra.airport.business.AirportBusiness;
+import br.com.bexs.dijktra.airport.helper.UserEntryBuilder;
+import br.com.bexs.dijktra.airport.model.UserEntry;
 
 @RestController
 @ConditionalOnWebApplication
@@ -22,23 +24,25 @@ public class RestApplicationController {
 	private String filePath;
 	
 	@GetMapping(path ="/dijkstra/airport/findBestPath/{entries}")
-	public String findBestPath(@PathVariable final String entries){
+	public String findBestPath(@PathVariable final String entry){
 		try {
+			UserEntry userEntry = UserEntryBuilder.buildQueryEntry(entry);
 			this.airportBusines.loadAplication(filePath);
-			return this.airportBusines.findBestPath(entries).toString();
+			return this.airportBusines.findBestPath(userEntry).toString();
 		} catch (Exception e) {
-			return "erroMerda";
+			return e.getMessage();
 		}
 		
 	}
 	
 	@PostMapping(path = "/dijkstra/airport/addConnection")
-	public String addConnection(@RequestBody final String connection) {
+	public String addConnection(@RequestBody final String entry) {
 		try {
+			UserEntry userEntry = UserEntryBuilder.buildInsertEntry(entry);
 			this.airportBusines.loadAplication(filePath);
-			return this.airportBusines.addConnection(connection).toString();
+			return this.airportBusines.addConnection(userEntry).toString();
 		} catch (Exception e) {
-			return "erroMerda";
+			return e.getMessage();
 		}
 	}
 	
